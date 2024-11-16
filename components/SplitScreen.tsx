@@ -9,8 +9,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SplitScreen({
   wallpapers,
+  onScroll
 }: {
   wallpapers: IWallpapers[];
+  onScroll?:(yOffset:number)=>void
 }) {
   const [selectedWallpeper, setSelectedWallpaper] =
     useState<null | IWallpapers>(null);
@@ -19,6 +21,11 @@ export default function SplitScreen({
       <ThemedView style={style.container}>
         <ThemedView style={style.innerContainer}>
           <FlatList
+          onScroll={(e)=>{
+            let yOffset = e.nativeEvent.contentOffset.y/1
+            onScroll?.(yOffset)
+
+          }}
             data={wallpapers.filter((_, index) => index % 2 == 0)}
             renderItem={({ item }) => (
               <View style={style.imageContainer}>

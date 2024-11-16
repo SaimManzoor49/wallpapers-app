@@ -1,28 +1,55 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions, Animated } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link } from "expo-router";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { IWallpapers, useWallpapers } from "@/hooks/useWallpappers";
-import ImageCard from "@/components/ImageCard";
-import { FlatList } from "react-native-gesture-handler";
-import { ThemedView } from "@/components/ThemedView";
-import DownloadPicture from "@/components/BottomSheet";
+import Carousel from 'react-native-reanimated-carousel';
+import { LinearGradient } from 'expo-linear-gradient';
 import SplitScreen from "@/components/SplitScreen";
+import { ThemedView } from "@/components/ThemedView";
+import { useCarousel } from "@/hooks/useCarousel";
+import { ThemedText } from "@/components/ThemedText";
+
+const TOP_BAR_HEIGHT = 250
 
 export default function explore() {
- 
+  const [yOffset,setScrollY] = useState(0)
+  const width = Dimensions.get('window').width;
   const wallpapers = useWallpapers();
+  const carouselItems = useCarousel()
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ParallaxScrollView
-        headerImage={
-          <Image style={{ flex: 1 }} source={{ uri: wallpapers[0]?.uri??'' }} />
-        }
-        headerBackgroundColor={{ dark: "black", light: "white" }}
-      >
-      <SplitScreen wallpapers={wallpapers}  />
-      </ParallaxScrollView>
+     <Animated.View style={{height:TOP_BAR_HEIGHT-yOffset}}>
+     <Carousel
+                loop
+                width={width}
+                height={TOP_BAR_HEIGHT-yOffset}
+                autoPlay={true}
+                data={carouselItems}
+                scrollAnimationDuration={1000}
+                onSnapToItem={(index) => console.log('current index:', index)}
+                renderItem={({ index }) => (
+                <>
+                 <ThemedView
+                        style={{
+                            flex: 1,
+                            borderWidth: 1,
+                            justifyContent: 'center',
+                        }}
+                    >
+                       <Image source={{uri:carouselItems[index].image}} style={{height:TOP_BAR_HEIGHT}} />
+                    </ThemedView>
+                      <LinearGradient colors={['transparent', 'black']} style={{flex:1,position:'absolute',zIndex:10, height:TOP_BAR_HEIGHT/2,width:'100%',bottom:0}}>
+                      <ThemedText style={{paddingTop:TOP_BAR_HEIGHT / 3,textAlign:'center',fontSize:30,fontWeight:"600",}}>
+                        {carouselItems[index].title}
+                      </ThemedText>
+                    </LinearGradient>
+                    </>
+                )}
+            />
+     </Animated.View>
+      <SplitScreen wallpapers={wallpapers} onScroll={(yOffset)=>{
+        setScrollY(yOffset)
+      }} />
     
     </SafeAreaView>
   );

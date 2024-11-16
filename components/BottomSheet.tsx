@@ -16,9 +16,9 @@ import { IWallpapers } from "@/hooks/useWallpappers";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedText } from "./ThemedText";
+import { ThemedView } from "./ThemedView";
 
-export const 
-DownloadPicture = ({
+export const DownloadPicture = ({
   onClose,
   wallpaper,
 }: {
@@ -44,34 +44,35 @@ DownloadPicture = ({
       onChange={handleSheetChanges}
       handleIndicatorStyle={{ height: 0 }}
       handleStyle={{ display: "none" }}
-      
     >
       <BottomSheetView style={styles.contentContainer}>
-        <Image style={styles.image} source={{ uri: wallpaper.uri }} />
-        <View style={styles.topbar}>
-          <Ionicons
-            name="close"
-            size={24}
-            color={theme === "light" ? Colors.light.icon : Colors.dark.icon}
-          />
-          <View style={styles.topbarinner}>
+        <ThemedView style={{flex:1}}>
+          <Image style={styles.image} source={{ uri: wallpaper.uri }} />
+          <ThemedView style={styles.topbar}>
             <Ionicons
-              name="heart"
+              name="close"
               size={24}
-              color={theme === "light" ? Colors.light.icon : Colors.dark.icon}
+              color={theme === "light" ? Colors.light.text : Colors.dark.text}
             />
-            <Ionicons
-              name="share"
-              size={24}
-              color={theme === "light" ? Colors.light.icon : Colors.dark.icon}
-              style={{ paddingLeft: 6 }}
-            />
-          </View>
-        </View>
-        <Text style={styles.textContainer}>
-          <ThemedText style={styles.text}>{wallpaper.name}</ThemedText>
-        </Text>
-        <DownloadButton />
+            <ThemedView style={styles.topbarinner}>
+              <Ionicons
+                name="heart"
+                size={24}
+                color={theme === "light" ? Colors.light.text : Colors.dark.text}
+              />
+              <Ionicons
+                name="share"
+                size={24}
+                color={theme === "light" ? Colors.light.text : Colors.dark.text}
+                style={{ paddingLeft: 6 }}
+              />
+            </ThemedView>
+          </ThemedView>
+          <Text style={styles.textContainer}>
+            <ThemedText style={styles.text}>{wallpaper.name}</ThemedText>
+          </Text>
+          <DownloadButton />
+        </ThemedView>
       </BottomSheetView>
     </BottomSheet>
   );
@@ -80,14 +81,35 @@ DownloadPicture = ({
 function DownloadButton() {
   const theme = useColorScheme() ?? "light";
   return (
-    <Pressable style={{ backgroundColor: "black",padding:10,marginHorizontal:40,marginVertical:20,justifyContent:'center',flexDirection:"row",borderRadius:10 }}>
-       <Ionicons
-              name="download"
-              size={24}
-              color={theme === "light" ? Colors.light.icon : Colors.dark.icon}
-              style={{ paddingRight: 6 }}
-            />
-      <Text style={{ fontSize: 20, color: "white",fontWeight:"600", }}>Download</Text>
+    <Pressable
+      style={{
+        backgroundColor:
+          theme === "light" ? Colors.light.background : Colors.dark.background,
+        padding: 10,
+        marginHorizontal: 40,
+        marginVertical: 20,
+        justifyContent: "center",
+        flexDirection: "row",
+        borderRadius: 10,
+        borderWidth:1,
+        borderColor: theme === "light" ? Colors.light.text : Colors.dark.text,
+      }}
+    >
+      <Ionicons
+        name="download"
+        size={24}
+        color={theme === "light" ? Colors.light.icon : Colors.dark.icon}
+        style={{ paddingRight: 6 }}
+      />
+      <Text
+        style={{
+          fontSize: 20,
+          color: theme === "light" ? Colors.light.text : Colors.dark.text,
+          fontWeight: "600",
+        }}
+      >
+        Download
+      </Text>
     </Pressable>
   );
 }
