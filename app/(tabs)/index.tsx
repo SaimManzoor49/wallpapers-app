@@ -1,24 +1,44 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import { Text } from 'react-native';
+import { View, Text, Image, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Link } from "expo-router";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { IWallpapers, useWallpapers } from "@/hooks/useWallpappers";
+import ImageCard from "@/components/ImageCard";
+import { FlatList } from "react-native-gesture-handler";
+import { ThemedView } from "@/components/ThemedView";
+import DownloadPicture from "@/components/BottomSheet";
+import SplitScreen from "@/components/SplitScreen";
 
-const Tab = createMaterialTopTabNavigator();
-
-export default function ForYou() {
+export default function explore() {
+ 
+  const wallpapers = useWallpapers();
   return (
-    // <NavigationContainer>
-      <Tab.Navigator>
-      <Tab.Screen name="Liberary" component={HomeScreen} />
-      <Tab.Screen name="Liked" component={ProfileScreen} />
-      <Tab.Screen name="Suggested" component={ProfileScreen} />
-    </Tab.Navigator>
-    // </NavigationContainer>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ParallaxScrollView
+        headerImage={
+          <Image style={{ flex: 1 }} source={{ uri: wallpapers[0]?.uri??'' }} />
+        }
+        headerBackgroundColor={{ dark: "black", light: "white" }}
+      >
+      <SplitScreen wallpapers={wallpapers}  />
+      </ParallaxScrollView>
+    
+    </SafeAreaView>
   );
 }
 
-const HomeScreen = ()=>{
-  return<><Text>Home</Text></>
-}
-const ProfileScreen = ()=>{
-  return<Text>Home</Text>
-}
+const style = StyleSheet.create({
+  container: {
+    // display: "flex",
+    flexDirection: "row",
+    flex: 1,
+  },
+  innerContainer: {
+    flex: 1,
+    padding: 10,
+  },
+  imageContainer: {
+    paddingVertical: 10,
+  },
+});
