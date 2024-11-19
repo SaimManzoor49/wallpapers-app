@@ -1,11 +1,11 @@
 import SplitScreen from '@/components/SplitScreen';
 import { ThemedView } from '@/components/ThemedView';
+import ThemeSafeAreaView from '@/components/ThemeSafeAreaView';
 import { Colors } from '@/constants/Colors';
 import { useLiberaryWallpapers, useLikedWallpapers, useSuggestedWallpapers, useWallpapers } from '@/hooks/useWallpappers';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -13,19 +13,24 @@ export default function ForYou() {
   const theme = useColorScheme() ?? "light";
   return (
     // <NavigationContainer>
-    <SafeAreaView style={styles.container}>
+    <ThemeSafeAreaView style={styles.container}>
       <Tab.Navigator style={{flex:1}}
       screenOptions={{
         tabBarActiveTintColor:Colors[theme].tint,
         tabBarStyle:{
         backgroundColor:Colors[theme].background
-      }}}
+      },
+    tabBarIndicatorStyle:{
+      backgroundColor:Colors[theme].indicatior,
+      height:5
+    }
+    }}
       >
       <Tab.Screen name="Liberary" component={LiberaryScreen} />
       <Tab.Screen name="Liked" component={LikedScreen} />
       <Tab.Screen name="Suggested" component={SuggestedScreen} />
     </Tab.Navigator>
-    </SafeAreaView>
+    </ThemeSafeAreaView>
     // </NavigationContainer>
   );
 }

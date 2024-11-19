@@ -5,7 +5,6 @@ import { FlatList } from "react-native-gesture-handler";
 import ImageCard from "./ImageCard";
 import { IWallpapers } from "@/hooks/useWallpappers";
 import DownloadPicture from "./BottomSheet";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SplitScreen({
   wallpapers,

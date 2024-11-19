@@ -17,6 +17,8 @@ import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
+import * as MediaLibrary from "expo-media-library";
+import * as FileSystem from "expo-file-system";
 
 export const DownloadPicture = ({
   onClose,
@@ -46,10 +48,11 @@ export const DownloadPicture = ({
       handleStyle={{ display: "none" }}
     >
       <BottomSheetView style={styles.contentContainer}>
-        <ThemedView style={{flex:1}}>
+        <ThemedView style={{ flex: 1 }}>
           <Image style={styles.image} source={{ uri: wallpaper.uri }} />
           <ThemedView style={styles.topbar}>
             <Ionicons
+              onPress={onClose}
               name="close"
               size={24}
               color={theme === "light" ? Colors.light.text : Colors.dark.text}
@@ -71,17 +74,32 @@ export const DownloadPicture = ({
           <Text style={styles.textContainer}>
             <ThemedText style={styles.text}>{wallpaper.name}</ThemedText>
           </Text>
-          <DownloadButton />
+          <DownloadButton url={wallpaper.uri} />
         </ThemedView>
       </BottomSheetView>
     </BottomSheet>
   );
 };
 
-function DownloadButton() {
+function DownloadButton({ url }: { url: string }) {
   const theme = useColorScheme() ?? "light";
   return (
     <Pressable
+      onPress={async () => {
+        let date = new Date().getTime();
+        let fileUrl = FileSystem.documentDirectory + `${date}.jpg`;
+        try {
+          const res = await FileSystem.downloadAsync(url, fileUrl);
+          const response = await MediaLibrary.requestPermissionsAsync(true);
+          if (response.granted) {
+            MediaLibrary.createAssetAsync(fileUrl);
+          } else {
+            console.error("Permission not granted");
+          }
+        } catch (error) {
+          console.log("FS Error:", error);
+        }
+      }}
       style={{
         backgroundColor:
           theme === "light" ? Colors.light.background : Colors.dark.background,
@@ -91,7 +109,7 @@ function DownloadButton() {
         justifyContent: "center",
         flexDirection: "row",
         borderRadius: 10,
-        borderWidth:1,
+        borderWidth: 1,
         borderColor: theme === "light" ? Colors.light.text : Colors.dark.text,
       }}
     >

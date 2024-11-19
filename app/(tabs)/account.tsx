@@ -14,16 +14,40 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import ThemeSafeAreaView from "@/components/ThemeSafeAreaView";
 
 export default function account() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <ThemeSafeAreaView style={{ flex: 1 }}>
       <Header />
       <ThemedView style={{ flex: 1 }}>
         <Auth />
-      <ThemeSelector />
+        <ThemeSelector />
       </ThemedView>
-    </SafeAreaView>
+      <About />
+    </ThemeSafeAreaView>
+  );
+}
+
+function About() {
+  return (
+    <ThemedView style={{ paddingTop: 20 }}>
+      <ThemedText style={styles.textbg}>About</ThemedText>
+     <ThemedView style={{marginTop:10}}>
+     <Pressable>
+        <ThemedText style={{margin:10,fontSize:18}}>Account</ThemedText>
+      </Pressable>
+      <Pressable>
+        <ThemedText style={{margin:10,fontSize:18}}>Privacy Policy</ThemedText>
+      </Pressable>
+      <Pressable>
+        <ThemedText style={{margin:10,fontSize:18}}>Terms of Services</ThemedText>
+      </Pressable>
+      <Pressable>
+        <ThemedText style={{margin:10,fontSize:18}}>Licences</ThemedText>
+      </Pressable>
+     </ThemedView>
+    </ThemedView>
   );
 }
 
@@ -38,8 +62,8 @@ function AuthButton({ icon, label }: { icon: any; label: string }) {
         justifyContent: "center",
         flexDirection: "row",
         borderRadius: 10,
-        borderWidth:1,
-        borderColor:theme === "light" ? Colors.light.text : Colors.dark.text
+        borderWidth: 1,
+        borderColor: theme === "light" ? Colors.light.text : Colors.dark.text,
       }}
     >
       {icon}
@@ -91,30 +115,52 @@ function Header() {
 
 function ThemeSelector() {
   return (
-    <View style={{paddingTop:20}}>
+    <ThemedView style={{ paddingTop: 20 }}>
       <ThemedText style={styles.textbg}>Settings</ThemedText>
       <ThemedText style={{}}>Theme</ThemedText>
-        <ThemedView style={{flexDirection:'row',justifyContent:'space-between',marginTop:10}}>
-        <ThemeButton title="Dark" selected={false} colorScheme="dark"/>
-        <ThemeButton title="Light" selected={false} colorScheme="light"/>
-        <ThemeButton title="System" selected={false} colorScheme={null}/>
-        </ThemedView>
-       
-      </View>
+      <ThemedView
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: 10,
+        }}
+      >
+        <ThemeButton title="Dark" selected={false} colorScheme="dark" />
+        <ThemeButton title="Light" selected={false} colorScheme="light" />
+        <ThemeButton title="System" selected={false} colorScheme={null} />
+      </ThemedView>
+    </ThemedView>
   );
 }
 
-function ThemeButton({title,selected,colorScheme}:{title:string,selected:boolean,colorScheme:'light'|'dark'|null}){
+function ThemeButton({
+  title,
+  selected,
+  colorScheme,
+}: {
+  title: string;
+  selected: boolean;
+  colorScheme: "light" | "dark" | null;
+}) {
   const theme = useColorScheme() ?? "light";
-  return(
-    <Pressable style={{padding:10,borderColor:theme === "light" ? Colors.light.text : Colors.dark.text,borderWidth:1,borderRadius:5,flex:0.3}} onPress={()=>{
-      Appearance.setColorScheme(colorScheme)
-    }}>
-      <ThemedText style={{textAlign:'center',width:"100%"}}>
+  return (
+    <Pressable
+      style={{
+        padding: 10,
+        borderColor: theme === "light" ? Colors.light.text : Colors.dark.text,
+        borderWidth: 1,
+        borderRadius: 5,
+        flex: 0.3,
+      }}
+      onPress={() => {
+        Appearance.setColorScheme(colorScheme);
+      }}
+    >
+      <ThemedText style={{ textAlign: "center", width: "100%" }}>
         {title}
       </ThemedText>
     </Pressable>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
