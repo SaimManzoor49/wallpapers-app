@@ -8,54 +8,37 @@ import DownloadPicture from "./BottomSheet";
 
 export default function SplitScreen({
   wallpapers,
-  onScroll
+  onScroll,
 }: {
   wallpapers: IWallpapers[];
-  onScroll?:(yOffset:number)=>void
+  onScroll?: (yOffset: number) => void;
 }) {
   const [selectedWallpeper, setSelectedWallpaper] =
     useState<null | IWallpapers>(null);
   return (
     <>
-      <ThemedView style={style.container}>
-        <ThemedView style={style.innerContainer}>
-          <FlatList
-          onScroll={(e)=>{
-            let yOffset = e.nativeEvent.contentOffset.y/1
-            onScroll?.(yOffset)
-
-          }}
-            data={wallpapers.filter((_, index) => index % 2 == 0)}
-            renderItem={({ item }) => (
-              <View style={style.imageContainer}>
-                <ImageCard
-                  wallpaper={item}
-                  onPress={() => {
-                    setSelectedWallpaper(item);
-                  }}
-                />
-              </View>
-            )}
-            keyExtractor={(item) => item.name + Math.random().toString()}
-          ></FlatList>
-        </ThemedView>
-        <ThemedView style={style.innerContainer}>
-          <FlatList
-            data={wallpapers.filter((_, index) => index % 2 == 1)}
-            renderItem={({ item }) => (
-              <View style={style.imageContainer}>
-                <ImageCard
-                  wallpaper={item}
-                  onPress={() => {
-                    setSelectedWallpaper(item);
-                  }}
-                />
-              </View>
-            )}
-            keyExtractor={(item) => item.name + Math.random().toString()}
-          ></FlatList>
-        </ThemedView>
-      </ThemedView>
+       <FlatList
+                onScroll={(e) => {
+                    let yOffset = e.nativeEvent.contentOffset.y / 1;
+                    onScroll?.(yOffset);
+                }}
+                data={wallpapers.filter((_, index) => index % 2 === 0).map((_, index) => [wallpapers[index], wallpapers[index + 1]])}
+                renderItem={({item: [first, second]}) => <ThemedView style={styles.container}>
+                    <ThemedView style={styles.innerContainer}>
+                        <View style={styles.imageContainer}><ImageCard onPress={() => {
+                            setSelectedWallpaper(first)
+                        }} wallpaper={first} /></View>
+                    </ThemedView>
+                    <ThemedView style={styles.innerContainer}>
+                        {second && <View style={styles.imageContainer}><ImageCard wallpaper={second} onPress={() => {
+                            setSelectedWallpaper(second)
+                        }} /></View>}
+                    </ThemedView>
+                </ThemedView>
+                
+                }
+                keyExtractor={item => item[0].name}
+            />
       {selectedWallpeper && (
         <DownloadPicture
           onClose={() => {
@@ -68,7 +51,7 @@ export default function SplitScreen({
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     // display: "flex",
     flexDirection: "row",
